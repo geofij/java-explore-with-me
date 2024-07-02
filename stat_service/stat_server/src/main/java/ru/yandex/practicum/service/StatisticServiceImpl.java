@@ -11,6 +11,7 @@ import ru.yandex.practicum.storage.StatisticRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,8 @@ public class StatisticServiceImpl implements StatisticService {
             viewStats.add(newViewStats);
         }
 
-        return viewStats;
+        return viewStats.stream()
+                .sorted(Comparator.comparingLong(ViewStats::getHits).reversed())
+                .collect(Collectors.toList());
     }
 }
