@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class EndpointHit {
-    private long id;
+    private Long id;
     private String app;
     private String uri;
     private String ip;
