@@ -56,5 +56,4 @@ public class Event {
 
     private String title;
     private long views;
-    private boolean available = true;
 }
