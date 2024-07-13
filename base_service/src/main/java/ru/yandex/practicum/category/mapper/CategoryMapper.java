@@ -4,6 +4,9 @@ import ru.yandex.practicum.category.dto.CategoryDto;
 import ru.yandex.practicum.category.dto.NewCategoryDto;
 import ru.yandex.practicum.category.model.Category;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CategoryMapper {
     public static Category toCategory(NewCategoryDto categoryDto) {
         return Category.builder()
@@ -16,5 +19,11 @@ public class CategoryMapper {
                 .id(category.getId())
                 .name(category.getName())
                 .build();
+    }
+
+    public static List<CategoryDto> toCategoryDtoList(List<Category> categories) {
+        return categories.stream()
+                .map(CategoryMapper::toCategoryDto)
+                .collect(Collectors.toList());
     }
 }

@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.error.model.ValidationException;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.dto.NewEventDto;
@@ -19,10 +21,12 @@ import ru.yandex.practicum.request.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.request.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("/users")
+@RestController
+@RequestMapping(path = "/users")
 public class PrivateEventController {
     private final PrivateEventService service;
 
@@ -30,6 +34,7 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createNewEvent(@PathVariable long userId,
                                        @Valid @RequestBody NewEventDto newEventDto) {
+        validateEventDate(newEventDto);
         return service.createNewEvent(userId, newEventDto);
     }
 
@@ -67,5 +72,11 @@ public class PrivateEventController {
     public List<ParticipationRequestDto> getUserEventRequests(@PathVariable long userId,
                                                               @PathVariable long eventId) {
         return service.getUserEventRequests(userId, eventId);
+    }
+
+    private void validateEventDate(NewEventDto eventDto) {
+        if (eventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new ValidationException("Дата и время события должны быть через 2 часа или позже");
+        }
     }
 }

@@ -7,7 +7,7 @@ import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.dto.NewEventDto;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.model.EventState;
-import ru.yandex.practicum.event.model.Location;
+import ru.yandex.practicum.event.dto.Location;
 import ru.yandex.practicum.user.UserMapper;
 import ru.yandex.practicum.user.model.User;
 
@@ -20,10 +20,8 @@ public class EventMapper {
         return Event.builder()
                 .annotation(eventDto.getAnnotation())
                 .description(eventDto.getDescription())
-                .location(Location.builder()
-                        .lon(eventDto.getLocation().getLon())
-                        .lat(eventDto.getLocation().getLat())
-                        .build())
+                .lon(eventDto.getLocation().getLon())
+                .lat(eventDto.getLocation().getLat())
                 .paid(eventDto.isPaid())
                 .participantLimit(eventDto.getParticipantLimit())
                 .requestModeration(eventDto.isRequestModeration())
@@ -34,6 +32,7 @@ public class EventMapper {
                 .state(EventState.PENDING)
                 .views(0)
                 .initiator(initiator)
+                .eventDate(eventDto.getEventDate())
                 .build();
     }
 
@@ -46,7 +45,10 @@ public class EventMapper {
                 .createdOn(event.getCreatedOn())
                 .description(event.getDescription())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
-                .location(event.getLocation())
+                .location(Location.builder()
+                        .lat(event.getLat())
+                        .lon(event.getLon())
+                        .build())
                 .paid(event.isPaid())
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(event.getPublishedOn())

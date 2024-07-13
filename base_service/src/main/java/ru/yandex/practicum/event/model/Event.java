@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.user.model.User;
 
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@Entity
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +45,8 @@ public class Event {
     @ManyToOne
     private User initiator;
 
-    @ManyToOne
-    private Location location;
-
+    private double lat;
+    private double lon;
     private boolean paid;
     private long participantLimit;
     private LocalDateTime publishedOn;

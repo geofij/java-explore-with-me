@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.user.model.User;
 
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@Entity
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.event.model.EventState;
-import ru.yandex.practicum.event.model.Location;
 
 import java.time.LocalDateTime;
 
