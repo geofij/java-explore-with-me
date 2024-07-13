@@ -44,6 +44,10 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             newRequest.setStatus(RequestStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
 
+            if (event.getConfirmedRequests() == event.getParticipantLimit()) {
+                event.setAvailable(false);
+            }
+
             eventRepository.save(event);
         } else {
             newRequest.setStatus(RequestStatus.PENDING);
@@ -63,6 +67,12 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
             if (request.getStatus() == RequestStatus.CONFIRMED) {
                 Event event = request.getEvent();
                 event.setConfirmedRequests(event.getConfirmedRequests() - 1);
+
+                if (!event.isAvailable() && event.getConfirmedRequests() < event.getParticipantLimit()) {
+                    event.setAvailable(true);
+                }
+
+                eventRepository.save(event);
             }
 
             request.setStatus(RequestStatus.CANCELED);

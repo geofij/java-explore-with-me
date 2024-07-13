@@ -8,10 +8,11 @@ import ru.yandex.practicum.event.dto.NewEventDto;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.model.EventState;
 import ru.yandex.practicum.event.dto.Location;
-import ru.yandex.practicum.user.UserMapper;
+import ru.yandex.practicum.user.mapper.UserMapper;
 import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class EventMapper {
                 .views(0)
                 .initiator(initiator)
                 .eventDate(eventDto.getEventDate())
+                .available(true)
                 .build();
     }
 
@@ -74,8 +76,21 @@ public class EventMapper {
     }
 
     public static List<EventShortDto> toShortDtoList(List<Event> events) {
+        if (events == null || events.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         return events.stream()
                 .map(EventMapper::toShortDto)
+                .collect(Collectors.toList());
+    }
+    public static List<EventFullDto> toFullDtoList(List<Event> events) {
+        if (events == null || events.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return events.stream()
+                .map(EventMapper::toFullDto)
                 .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.user;
+package ru.yandex.practicum.user.mapper;
 
 import ru.yandex.practicum.user.dto.NewUserRequest;
 import ru.yandex.practicum.user.dto.UserDto;

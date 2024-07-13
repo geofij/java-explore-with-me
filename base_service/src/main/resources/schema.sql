@@ -40,6 +40,7 @@ create table if not exists events (
     views int not null,
     lat double precision not null,
     lon double precision not null,
+    boolean available not null,
     constraint pk_event primary key (id),
     constraint fk_user_id foreign key (initiator_id) references users (id),
     constraint fk_category_id foreign key (category_id) references categories (id)

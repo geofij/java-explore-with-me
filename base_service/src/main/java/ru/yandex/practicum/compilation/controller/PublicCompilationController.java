@@ -25,7 +25,7 @@ public class PublicCompilationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CompilationDto> getCompilations(@RequestParam(required = false) boolean pinned,
+    public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
                                                 @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                 @RequestParam(defaultValue = "10") @Positive int size) {
         return service.getCompilations(pinned, from, size);

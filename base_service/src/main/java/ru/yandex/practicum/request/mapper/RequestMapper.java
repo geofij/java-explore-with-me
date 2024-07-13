@@ -4,6 +4,7 @@ import ru.yandex.practicum.request.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.request.dto.ParticipationRequestDto;
 import ru.yandex.practicum.request.model.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,10 @@ public class RequestMapper {
     }
 
     public static List<ParticipationRequestDto> toRequestDtoList(List<Request> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         return requests.stream()
                 .map(RequestMapper::toRequestDto)
                 .collect(Collectors.toList());

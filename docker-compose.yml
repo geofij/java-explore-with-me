@@ -29,22 +29,22 @@ services:
     image: base-service
     ports:
       - "8080:8080"
-#    depends_on:
-#      - base-db
-#    environment:
-#      - DB_NAME=base
-#      - DB_HOST=ewm-db
-#      - DB_PORT=5432
-#      - DB_USER=root
-#      - DB_PASSWORD=root
+    depends_on:
+      - base-db
+    environment:
+      - DB_NAME=base
+      - DB_HOST=ewm-db
+      - DB_PORT=5432
+      - DB_USER=root
+      - DB_PASSWORD=root
 
 
   ewm-db:
     image: postgres:14-alpine
-#    container_name: base-db
-#    ports:
-#      - "6542:5433"
-#    environment:
-#      - POSTGRES_DB=base
-#      - POSTGRES_USER=root
-#      - POSTGRES_PASSWORD=root
+    container_name: base-db
+    ports:
+      - "6542:5433"
+    environment:
+      - POSTGRES_DB=base
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
