@@ -30,7 +30,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - base-db
+      - ewm-db
     environment:
       - DB_NAME=base
       - DB_HOST=ewm-db
@@ -41,7 +41,7 @@ services:
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: base-db
+    container_name: ewm_db
     ports:
       - "6542:5433"
     environment:
