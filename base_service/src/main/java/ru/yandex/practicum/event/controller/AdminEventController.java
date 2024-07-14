@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.error.model.BadRequestException;
 import ru.yandex.practicum.error.model.ValidationException;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
@@ -43,6 +44,10 @@ public class AdminEventController {
                                         @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero int from,
                                         @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         if (states != null) validateEventState(states);
+
+        if ((rangeStart != null) && (rangeEnd != null)) if (rangeStart.isAfter(rangeEnd))
+            throw new BadRequestException("Неапваильно указаны даты начала и окончания события");
+
         return service.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

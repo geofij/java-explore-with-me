@@ -29,6 +29,7 @@ import ru.yandex.practicum.request.storage.RequestRepository;
 import ru.yandex.practicum.user.model.User;
 import ru.yandex.practicum.user.storage.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -98,8 +99,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         Event event = checkEvent(eventId);
         checkInitiator(userId, event);
 
-        EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
-        int countConfirmedRequests = requestRepository.countByEvent_idAndStatus(eventId, RequestStatus.CONFIRMED);
+        EventRequestStatusUpdateResult result = EventRequestStatusUpdateResult.builder()
+                .confirmedRequests(new ArrayList<>())
+                .rejectedRequests(new ArrayList<>())
+                .build();
+        long countConfirmedRequests = event.getConfirmedRequests();
 
         for (Long requestId : updateRequestStatusDto.getRequestIds()) {
             Request request = requestRepository.findById(requestId).orElseThrow(() ->
@@ -122,6 +126,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 requestRepository.save(request);
                 result.getRejectedRequests().add(RequestMapper.toRequestDto(request));
             }
+        }
+
+        if (event.getConfirmedRequests() < countConfirmedRequests) {
+            event.setConfirmedRequests(countConfirmedRequests);
+            eventRepository.save(event);
         }
 
         return result;
