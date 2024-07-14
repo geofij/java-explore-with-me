@@ -39,11 +39,12 @@ public class PublicEventController {
                                          @RequestParam(required = false) Boolean onlyAvailable,
                                          @RequestParam(defaultValue = "") String sort,
                                          @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero int from,
-                                         @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
+                                         @RequestParam(name = "size", defaultValue = "10") @Positive int size,
+                                         HttpServletRequest request) {
         if ((rangeStart != null) && (rangeEnd != null)) if (rangeStart.isAfter(rangeEnd))
             throw new BadRequestException("Неапваильно указаны даты начала и окончания события");
 
-        return service.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return service.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping("/{eventId}")

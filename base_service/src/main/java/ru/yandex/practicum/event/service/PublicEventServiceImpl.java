@@ -37,7 +37,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size) {
+    public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest httpRequest) {
         Specification<Event> spec = Specification.where(null);
         Optional<SortEventRequest> sortRequest = SortEventRequest.from(sort);
 
@@ -63,6 +63,18 @@ public class PublicEventServiceImpl implements PublicEventService {
         spec = spec.and(EventSpecification.byStateIn(List.of(EventState.PUBLISHED)));
 
         List<Event> eventPage = eventRepository.findAll(spec, page).getContent();
+
+        for (Event event : eventPage) {
+            event.setViews(event.getViews() + 1);
+        }
+
+        eventRepository.saveAll(eventPage);
+        statisticClient.post(EndpointHit.builder()
+                .uri(httpRequest.getRequestURI())
+                .app("ewm-main-service")
+                .ip(httpRequest.getRemoteAddr())
+                .timestamp(LocalDateTime.now().format(FORMATTER))
+                .build());
         return EventMapper.toShortDtoList(eventPage);
     }
 

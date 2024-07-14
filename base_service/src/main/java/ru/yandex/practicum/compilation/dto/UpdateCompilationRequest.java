@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -14,5 +15,7 @@ import java.util.List;
 public class UpdateCompilationRequest {
     private List<Long> events;
     private Boolean pinned;
+
+    @Size(min = 1, max = 50)
     private String title;
 }

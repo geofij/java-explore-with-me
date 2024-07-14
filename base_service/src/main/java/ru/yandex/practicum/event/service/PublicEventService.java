@@ -16,7 +16,8 @@ public interface PublicEventService {
                                   Boolean onlyAvailable,
                                   String sort,
                                   int from,
-                                  int size);
+                                  int size,
+                                  HttpServletRequest request);
 
     EventFullDto getEventById(long eventId, HttpServletRequest request);
 }
