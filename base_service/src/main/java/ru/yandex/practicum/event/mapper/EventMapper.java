@@ -84,6 +84,7 @@ public class EventMapper {
                 .map(EventMapper::toShortDto)
                 .collect(Collectors.toList());
     }
+
     public static List<EventFullDto> toFullDtoList(List<Event> events) {
         if (events == null || events.isEmpty()) {
             return new ArrayList<>();

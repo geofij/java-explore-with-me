@@ -24,7 +24,7 @@ public class CompilationMapper {
                 .pinned(compilation.getPinned())
                 .events(EventMapper.toShortDtoList(compilation.getEvents()))
                 .build();
-    };
+    }
 
     public static List<CompilationDto> compilationDtoList(List<Compilation> compilations) {
         if (compilations == null || compilations.isEmpty()) {

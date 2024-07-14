@@ -13,6 +13,7 @@ import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.service.PublicEventService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -41,7 +42,7 @@ public class PublicEventController {
 
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventById(@PathVariable long eventId) {
-        return service.getEventById(eventId);
+    public EventFullDto getEventById(@PathVariable long eventId, HttpServletRequest request) {
+        return service.getEventById(eventId, request);
     }
 }

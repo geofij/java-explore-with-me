@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.storage.CategoryRepository;
+import ru.yandex.practicum.error.model.ConflictException;
 import ru.yandex.practicum.error.model.NotFoundException;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.UpdateEventAdminRequest;
@@ -20,6 +22,7 @@ import ru.yandex.practicum.user.model.User;
 import ru.yandex.practicum.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +35,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventFullDto> getEvents(List<Long> users,
                                         List<String> states,
                                         List<Long> categories,
@@ -41,7 +45,6 @@ public class AdminEventServiceImpl implements AdminEventService {
                                         int size) {
         Sort sortById = Sort.by(Sort.Direction.DESC, "id");
         Pageable page = PageRequest.of(from, size, sortById);
-        
         Specification<Event> spec = Specification.where(null);
 
         if (users != null && !users.isEmpty()) {
@@ -68,10 +71,42 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEventById(long eventId, UpdateEventAdminRequest updateEventRequestDto) {
-        return null;
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id-" + eventId + " not found"));
+
+        if (!event.getState().equals(EventState.PENDING))
+            throw new ConflictException("Редактирование этих событий запрещено");
+
+        if (updateEventRequestDto.getAnnotation() != null) event.setAnnotation(updateEventRequestDto.getAnnotation());
+        if (updateEventRequestDto.getDescription() != null) event.setDescription(updateEventRequestDto.getDescription());
+        if (updateEventRequestDto.getEventDate() != null) {
+            if (updateEventRequestDto.getEventDate().isBefore(LocalDateTime.now().plus(2, ChronoUnit.HOURS))) {
+                throw new ConflictException("Incorrect event date");
+            } else event.setEventDate(updateEventRequestDto.getEventDate());
+        }
+        if (updateEventRequestDto.getPaid() != null) event.setPaid(updateEventRequestDto.getPaid());
+        if (updateEventRequestDto.getParticipantLimit() != null) event.setParticipantLimit(updateEventRequestDto.getParticipantLimit());
+        if (updateEventRequestDto.getRequestModeration() != null) event.setRequestModeration(updateEventRequestDto.getRequestModeration());
+        if (updateEventRequestDto.getTitle() != null) event.setTitle(updateEventRequestDto.getTitle());
+
+        if (updateEventRequestDto.getStateAction() != null) {
+            switch (updateEventRequestDto.getStateAction()) {
+                case REJECT_EVENT: {
+                    event.setState(EventState.CANCELED);
+                    break;
+                }
+                case PUBLISH_EVENT: {
+                    event.setState(EventState.PUBLISHED);
+                    event.setPublishedOn(LocalDateTime.now());
+                }
+            }
+        }
+
+        return EventMapper.toFullDto(eventRepository.saveAndFlush(event));
     }
-    
+
     private List<EventState> fromStringsToEventStates(List<String> states) {
         List<EventState> eventStates = new ArrayList<>();
 
@@ -88,7 +123,7 @@ public class AdminEventServiceImpl implements AdminEventService {
                     break;
             }
         }
-        
+
         return eventStates;
     }
 }

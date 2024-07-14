@@ -1,18 +1,29 @@
 package ru.yandex.practicum.event.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.EndpointHit;
 import ru.yandex.practicum.StatisticClient;
+import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.storage.CategoryRepository;
 import ru.yandex.practicum.error.model.NotFoundException;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.SortEventRequest;
+import ru.yandex.practicum.event.specification.EventSpecification;
 import ru.yandex.practicum.event.storage.EventRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,41 +33,49 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final StatisticClient statisticClient;
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size) {
-//        Specification<Event> spec = Specification.where(null);
-//        List<Category> categoriesList;
-//        Sort sortBy;
-//        Optional<SortEventRequest> sortRequest = SortEventRequest.from(sort);
-//
-//        sortBy = sortRequest.map(request -> request == SortEventRequest.VIEWS ? Sort.by(Sort.Direction.DESC, "views") :
-//                Sort.by(Sort.Direction.DESC, "eventDate")).orElseGet(() -> Sort.by(Sort.Direction.DESC, "id"));
-//        Pageable page = PageRequest.of(from, size, sortBy);
-//        Page<Event> eventPage;
-//
-//        if (text != null && !text.isEmpty()) {
-//            spec = spec.and(EventSpecification.byAnnotation(text));
-//        }
-//        if (categories != null && !categories.isEmpty()) {
-//            categoriesList = categoryRepository.findAllIdIn(categories);
-//            spec = spec.and(EventSpecification.byCategoryIn(categoriesList));
-//        }
-//        if (paid != null) {
-//            spec = spec.and(EventSpecification.byPaid(paid));
-//        }
-//        if (onlyAvailable != null && onlyAvailable) {
-//            spec = spec.and(EventSpecification.byAvailable(true));
-//        }
-//
-//        eventPage = eventRepository.findAll(spec, page);
+        Specification<Event> spec = Specification.where(null);
+        Optional<SortEventRequest> sortRequest = SortEventRequest.from(sort);
 
-        return null;
+        Sort sortBy = sortRequest.map(request -> request == SortEventRequest.VIEWS ? Sort.by(Sort.Direction.DESC, "views") :
+                Sort.by(Sort.Direction.DESC, "eventDate")).orElseGet(() -> Sort.by(Sort.Direction.DESC, "id"));
+        Pageable page = PageRequest.of(from, size, sortBy);
+
+
+        if (text != null && !text.isEmpty()) {
+            spec = spec.and(EventSpecification.byAnnotation(text));
+        }
+        if (categories != null && !categories.isEmpty()) {
+            List<Category> categoriesList = categoryRepository.findAllIdIn(categories);
+            spec = spec.and(EventSpecification.byCategoryIn(categoriesList));
+        }
+        if (paid != null) {
+            spec = spec.and(EventSpecification.byPaid(paid));
+        }
+        if (onlyAvailable != null && onlyAvailable) {
+            spec = spec.and(EventSpecification.byAvailable(true));
+        }
+
+        List<Event> eventPage = eventRepository.findAll(spec, page).getContent();
+
+        return EventMapper.toShortDtoList(eventPage);
     }
 
     @Override
-    public EventFullDto getEventById(long eventId) {
+    @Transactional
+    public EventFullDto getEventById(long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Category with id " + eventId + " not found"));
 
+        event.setViews(event.getViews() + 1);
+        eventRepository.save(event);
+
+        statisticClient.post(EndpointHit.builder()
+                        .uri(request.getRequestURI())
+                        .app("ewm-main-service")
+                        .ip(request.getRemoteAddr())
+                .build());
         return EventMapper.toFullDto(event);
     }
 }

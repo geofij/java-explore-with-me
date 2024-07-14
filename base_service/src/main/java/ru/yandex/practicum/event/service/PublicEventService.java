@@ -3,6 +3,7 @@ package ru.yandex.practicum.event.service;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface PublicEventService {
                                   int from,
                                   int size);
 
-    EventFullDto getEventById(long eventId);
+    EventFullDto getEventById(long eventId, HttpServletRequest request);
 }
