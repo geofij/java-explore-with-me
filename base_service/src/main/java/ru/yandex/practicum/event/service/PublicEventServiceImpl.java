@@ -47,7 +47,7 @@ public class PublicEventServiceImpl implements PublicEventService {
             spec = spec.and(EventSpecification.byAnnotation(text));
         }
         if (categories != null && !categories.isEmpty()) {
-            List<Category> categoriesList = categoryRepository.findAllIdIn(categories);
+            List<Category> categoriesList = categoryRepository.findAllByIdIn(categories);
             spec = spec.and(EventSpecification.byCategoryIn(categoriesList));
         }
         if (paid != null) {
