@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.storage.CategoryRepository;
+import ru.yandex.practicum.error.model.BadRequestException;
 import ru.yandex.practicum.error.model.ConflictException;
 import ru.yandex.practicum.error.model.NotFoundException;
 import ru.yandex.practicum.event.dto.EventFullDto;
@@ -22,7 +23,6 @@ import ru.yandex.practicum.user.model.User;
 import ru.yandex.practicum.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,13 +77,13 @@ public class AdminEventServiceImpl implements AdminEventService {
                 .orElseThrow(() -> new NotFoundException("Event with id-" + eventId + " not found"));
 
         if (!event.getState().equals(EventState.PENDING))
-            throw new ConflictException("Редактирование этих событий запрещено");
+            throw new ConflictException("Events has already been processed");
 
         if (updateEventRequestDto.getAnnotation() != null) event.setAnnotation(updateEventRequestDto.getAnnotation());
         if (updateEventRequestDto.getDescription() != null) event.setDescription(updateEventRequestDto.getDescription());
         if (updateEventRequestDto.getEventDate() != null) {
-            if (updateEventRequestDto.getEventDate().isBefore(LocalDateTime.now().plus(2, ChronoUnit.HOURS))) {
-                throw new ConflictException("Incorrect event date");
+            if (updateEventRequestDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+                throw new BadRequestException("Incorrect event date");
             } else event.setEventDate(updateEventRequestDto.getEventDate());
         }
         if (updateEventRequestDto.getPaid() != null) event.setPaid(updateEventRequestDto.getPaid());

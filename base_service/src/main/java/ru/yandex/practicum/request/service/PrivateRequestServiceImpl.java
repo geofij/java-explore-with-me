@@ -40,7 +40,7 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
 
-        if (!event.isRequestModeration()) {
+        if (!event.isRequestModeration() || event.getParticipantLimit() == 0) {
             newRequest.setStatus(RequestStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
 

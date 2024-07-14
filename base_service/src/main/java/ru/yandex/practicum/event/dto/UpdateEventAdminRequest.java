@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.event.model.StateAction;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,8 +15,12 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 public class UpdateEventAdminRequest {
+    @Size(min = 20, max = 2000)
     private String annotation;
+
     private Long category;
+
+    @Size(min = 20, max = 7000)
     private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
@@ -26,5 +31,7 @@ public class UpdateEventAdminRequest {
     private Long participantLimit;
     private Boolean requestModeration;
     private StateAction stateAction;
+
+    @Size(min = 3, max = 120)
     private String title;
 }

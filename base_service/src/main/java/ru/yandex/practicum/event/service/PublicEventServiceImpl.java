@@ -23,12 +23,14 @@ import ru.yandex.practicum.event.storage.EventRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PublicEventServiceImpl implements PublicEventService {
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final StatisticClient statisticClient;
@@ -81,6 +83,7 @@ public class PublicEventServiceImpl implements PublicEventService {
                         .uri(request.getRequestURI())
                         .app("ewm-main-service")
                         .ip(request.getRemoteAddr())
+                        .timestamp(LocalDateTime.now().format(FORMATTER))
                 .build());
         return EventMapper.toFullDto(event);
     }

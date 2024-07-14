@@ -20,7 +20,7 @@ public class StatisticClient {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final RestTemplate restTemplate;
 
-    public StatisticClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
+    public StatisticClient(@Value("http://stats-server:9090") String serverUrl, RestTemplateBuilder builder) {
 
         this.restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
