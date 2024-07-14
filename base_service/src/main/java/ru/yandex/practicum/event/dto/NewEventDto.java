@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -18,14 +19,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NewEventDto {
     @Size(min = 20, max = 2000)
-    @NotNull
+    @NotBlank
     private String annotation;
 
     @NotNull
     private long category;
 
     @Size(min = 20, max = 7000)
-    @NotNull
+    @NotBlank
     private String description;
 
     @Future

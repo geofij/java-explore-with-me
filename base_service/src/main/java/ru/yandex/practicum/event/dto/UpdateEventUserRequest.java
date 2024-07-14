@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.event.model.StateAction;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -30,6 +31,8 @@ public class UpdateEventUserRequest {
 
     private Location location;
     private Boolean paid;
+
+    @Positive
     private Long participantLimit;
     private Boolean requestModeration;
     private StateAction stateAction;

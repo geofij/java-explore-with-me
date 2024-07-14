@@ -16,6 +16,7 @@ import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
 import ru.yandex.practicum.event.model.SortEventRequest;
 import ru.yandex.practicum.event.specification.EventSpecification;
 import ru.yandex.practicum.event.storage.EventRepository;
@@ -57,8 +58,9 @@ public class PublicEventServiceImpl implements PublicEventService {
             spec = spec.and(EventSpecification.byAvailable(true));
         }
 
-        List<Event> eventPage = eventRepository.findAll(spec, page).getContent();
+        spec = spec.and(EventSpecification.byStateIn(List.of(EventState.PUBLISHED)));
 
+        List<Event> eventPage = eventRepository.findAll(spec, page).getContent();
         return EventMapper.toShortDtoList(eventPage);
     }
 
@@ -66,7 +68,11 @@ public class PublicEventServiceImpl implements PublicEventService {
     @Transactional
     public EventFullDto getEventById(long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Category with id " + eventId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " not found"));
+
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new NotFoundException("Event with id " + eventId + " not found");
+        }
 
         event.setViews(event.getViews() + 1);
         eventRepository.save(event);
