@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.EndpointHit;
 import ru.yandex.practicum.StatisticClient;
+import ru.yandex.practicum.ViewStats;
 import ru.yandex.practicum.category.model.Category;
 import ru.yandex.practicum.category.storage.CategoryRepository;
 import ru.yandex.practicum.error.model.NotFoundException;
@@ -36,7 +37,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final StatisticClient statisticClient;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest httpRequest) {
         Specification<Event> spec = Specification.where(null);
         Optional<SortEventRequest> sortRequest = SortEventRequest.from(sort);
@@ -44,7 +45,6 @@ public class PublicEventServiceImpl implements PublicEventService {
         Sort sortBy = sortRequest.map(request -> request == SortEventRequest.VIEWS ? Sort.by(Sort.Direction.DESC, "views") :
                 Sort.by(Sort.Direction.DESC, "eventDate")).orElseGet(() -> Sort.by(Sort.Direction.DESC, "id"));
         Pageable page = PageRequest.of(from, size, sortBy);
-
 
         if (text != null && !text.isEmpty()) {
             spec = spec.and(EventSpecification.byAnnotation(text));
@@ -61,14 +61,8 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
 
         spec = spec.and(EventSpecification.byStateIn(List.of(EventState.PUBLISHED)));
-
         List<Event> eventPage = eventRepository.findAll(spec, page).getContent();
 
-        for (Event event : eventPage) {
-            event.setViews(event.getViews() + 1);
-        }
-
-        eventRepository.saveAll(eventPage);
         statisticClient.post(EndpointHit.builder()
                 .uri(httpRequest.getRequestURI())
                 .app("ewm-main-service")
@@ -88,15 +82,25 @@ public class PublicEventServiceImpl implements PublicEventService {
             throw new NotFoundException("Event with id " + eventId + " not found");
         }
 
-        event.setViews(event.getViews() + 1);
-        eventRepository.save(event);
-
         statisticClient.post(EndpointHit.builder()
                         .uri(request.getRequestURI())
                         .app("ewm-main-service")
                         .ip(request.getRemoteAddr())
                         .timestamp(LocalDateTime.now().format(FORMATTER))
                 .build());
+
+        event.setViews(getUniqueViews(event, request));
+        eventRepository.save(event);
+
         return EventMapper.toFullDto(event);
+    }
+
+    private long getUniqueViews(Event event, HttpServletRequest request) {
+        LocalDateTime rangeStart = event.getCreatedOn().minusHours(1);
+        LocalDateTime rangeEnd = event.getEventDate().plusYears(1);
+
+        List<ViewStats> views = statisticClient.get(rangeStart, rangeEnd, List.of(request.getRequestURI()), true);
+
+        return views.size();
     }
 }

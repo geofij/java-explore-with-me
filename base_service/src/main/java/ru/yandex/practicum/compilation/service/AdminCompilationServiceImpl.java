@@ -28,20 +28,22 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
-        List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
-
         Compilation newComp = compilationRepository.save(CompilationMapper.toCompilation(newCompilationDto));
-        List<CompilationEvent> compEventList = new ArrayList<>();
 
-        for (Event event : events) {
-            compEventList.add(CompilationEvent.builder()
-                            .event(event)
-                            .compilation(newComp)
-                    .build());
+        if (newCompilationDto.getEvents() != null && newCompilationDto.getEvents().isEmpty()) {
+            List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
+            List<CompilationEvent> compEventList = new ArrayList<>();
+
+            for (Event event : events) {
+                compEventList.add(CompilationEvent.builder()
+                        .event(event)
+                        .compilation(newComp)
+                        .build());
+            }
+
+            compilationEventRepository.saveAll(compEventList);
+            newComp.setEvents(events);
         }
-
-        compilationEventRepository.saveAll(compEventList);
-        newComp.setEvents(events);
 
         return CompilationMapper.toCompilationDto(newComp);
     }
