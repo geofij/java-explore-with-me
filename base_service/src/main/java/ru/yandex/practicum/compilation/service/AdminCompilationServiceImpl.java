@@ -30,7 +30,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
         Compilation newComp = compilationRepository.save(CompilationMapper.toCompilation(newCompilationDto));
 
-        if (newCompilationDto.getEvents() != null && newCompilationDto.getEvents().isEmpty()) {
+        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
             List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
             List<CompilationEvent> compEventList = new ArrayList<>();
 
