@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ErrorHandler {
-    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
