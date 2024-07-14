@@ -36,7 +36,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     private final StatisticClient statisticClient;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest httpRequest) {
         Specification<Event> spec = Specification.where(null);
         Optional<SortEventRequest> sortRequest = SortEventRequest.from(sort);

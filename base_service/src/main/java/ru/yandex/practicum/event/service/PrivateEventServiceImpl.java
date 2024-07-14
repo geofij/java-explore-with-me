@@ -105,6 +105,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .build();
         long countConfirmedRequests = event.getConfirmedRequests();
 
+        if (countConfirmedRequests == event.getParticipantLimit()) {
+            throw new ConflictException("Limit of participants has been reached");
+        }
+
         for (Long requestId : updateRequestStatusDto.getRequestIds()) {
             Request request = requestRepository.findById(requestId).orElseThrow(() ->
                     new NotFoundException("Request with id " + requestId + " не not found"));
