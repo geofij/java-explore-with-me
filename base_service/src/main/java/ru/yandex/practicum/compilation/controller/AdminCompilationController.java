@@ -29,16 +29,16 @@ public class AdminCompilationController {
         return service.createCompilation(newCompilationDto);
     }
 
-    @PatchMapping("/{compId}")
+    @PatchMapping("/{compilationId}")
     @ResponseStatus(HttpStatus.OK)
-    public CompilationDto updateCompilationById(@PathVariable long compId,
+    public CompilationDto updateCompilationById(@PathVariable long compilationId,
                                                 @Valid @RequestBody UpdateCompilationRequest updateCompilationDto) {
-        return service.updateCompilationById(compId, updateCompilationDto);
+        return service.updateCompilationById(compilationId, updateCompilationDto);
     }
 
-    @DeleteMapping("/{compId}")
+    @DeleteMapping("/{compilationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilationById(@PathVariable long compId) {
-        service.deleteCompilationById(compId);
+    public void deleteCompilationById(@PathVariable long compilationId) {
+        service.deleteCompilationById(compilationId);
     }
 }

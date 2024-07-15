@@ -32,10 +32,8 @@ public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String title;
     private Boolean pinned;
-
     @ManyToMany
     @JoinTable(name = "compilation_event",
                 joinColumns = { @JoinColumn(name = "compilation_id") },

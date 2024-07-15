@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class CompilationMapper {
     public static Compilation toCompilation(NewCompilationDto compilationDto) {
+        if (compilationDto == null) {
+            return new Compilation();
+        }
+
         return Compilation.builder()
                 .title(compilationDto.getTitle())
                 .pinned(compilationDto.getPinned())
@@ -18,6 +22,10 @@ public class CompilationMapper {
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation) {
+        if (compilation == null) {
+            return new CompilationDto();
+        }
+
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .title(compilation.getTitle())

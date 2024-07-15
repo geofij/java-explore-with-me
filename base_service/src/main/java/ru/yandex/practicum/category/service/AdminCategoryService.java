@@ -6,7 +6,7 @@ import ru.yandex.practicum.category.dto.NewCategoryDto;
 public interface AdminCategoryService {
     CategoryDto createNewCategory(NewCategoryDto newCategoryDto);
 
-    void deleteCategoryById(long catId);
+    void deleteCategoryById(long categoryId);
 
-    CategoryDto updateCategoryById(long catId, NewCategoryDto updateCategoryDto);
+    CategoryDto updateCategoryById(long categoryId, NewCategoryDto updateCategoryDto);
 }

@@ -25,14 +25,14 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
         Sort sortById = Sort.by(Sort.Direction.ASC, "id");
         Pageable page = PageRequest.of(from, size, sortById);
 
-        return CategoryMapper.toCategoryDtoList(repository.findAllCategories(page));
+        return CategoryMapper.toCategoryDtoList(repository.findAll(page).getContent());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDto getCategoryById(long catId) {
-        Category category = repository.findById(catId).orElseThrow(() ->
-                new NotFoundException("Category with id " + catId + " not found"));
+    public CategoryDto getCategoryById(long categoryId) {
+        Category category = repository.findById(categoryId).orElseThrow(() ->
+                new NotFoundException("Category with id " + categoryId + " not found"));
 
         return CategoryMapper.toCategoryDto(category);
     }

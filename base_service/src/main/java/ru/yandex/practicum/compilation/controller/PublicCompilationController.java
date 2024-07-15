@@ -31,9 +31,9 @@ public class PublicCompilationController {
         return service.getCompilations(pinned, from, size);
     }
 
-    @GetMapping("/{compId}")
+    @GetMapping("/{compilationId}")
     @ResponseStatus(HttpStatus.OK)
-    public CompilationDto getCompilationById(@PathVariable long compId) {
-        return service.getCompilationById(compId);
+    public CompilationDto getCompilationById(@PathVariable long compilationId) {
+        return service.getCompilationById(compilationId);
     }
 }

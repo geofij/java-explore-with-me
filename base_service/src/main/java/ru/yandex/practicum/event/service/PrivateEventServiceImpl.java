@@ -105,7 +105,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
                 .build();
         long countConfirmedRequests = event.getConfirmedRequests();
 
-        if (countConfirmedRequests == event.getParticipantLimit()) {
+        if (countConfirmedRequests == event.getParticipantLimit() && event.getParticipantLimit() > 0) {
             throw new ConflictException("Limit of participants has been reached");
         }
 

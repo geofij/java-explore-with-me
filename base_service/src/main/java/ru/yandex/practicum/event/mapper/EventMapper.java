@@ -18,6 +18,10 @@ import java.util.stream.Collectors;
 
 public class EventMapper {
     public static Event toEvent(NewEventDto eventDto, Category category, User initiator) {
+        if (eventDto == null) {
+            return new Event();
+        }
+
         return Event.builder()
                 .annotation(eventDto.getAnnotation())
                 .description(eventDto.getDescription())
@@ -39,6 +43,10 @@ public class EventMapper {
     }
 
     public static EventFullDto toFullDto(Event event) {
+        if (event == null) {
+            return new EventFullDto();
+        }
+
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -63,6 +71,10 @@ public class EventMapper {
     }
 
     public static EventShortDto toShortDto(Event event) {
+        if (event == null) {
+            return new EventShortDto();
+        }
+
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())

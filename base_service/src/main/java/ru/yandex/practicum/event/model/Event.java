@@ -31,30 +31,23 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private String annotation;
-
     @ManyToOne
     private Category category;
-
     private long confirmedRequests;
     private LocalDateTime createdOn;
     private String description;
     private LocalDateTime eventDate;
-
     @ManyToOne
     private User initiator;
-
     private double lat;
     private double lon;
     private boolean paid;
     private long participantLimit;
     private LocalDateTime publishedOn;
     private boolean requestModeration;
-
     @Enumerated(EnumType.STRING)
     private EventState state;
-
     private String title;
     private long views;
     private boolean available;

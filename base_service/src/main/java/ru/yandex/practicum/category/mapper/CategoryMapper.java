@@ -10,12 +10,20 @@ import java.util.stream.Collectors;
 
 public class CategoryMapper {
     public static Category toCategory(NewCategoryDto categoryDto) {
+        if (categoryDto == null) {
+            return new Category();
+        }
+
         return Category.builder()
                 .name(categoryDto.getName())
                 .build();
     }
 
     public static CategoryDto toCategoryDto(Category category) {
+        if (category == null) {
+            return new CategoryDto();
+        }
+
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())

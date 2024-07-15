@@ -29,12 +29,12 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
-    public void deleteCategoryById(long catId) {
-        Category category = findCategoryById(catId);
+    public void deleteCategoryById(long categoryId) {
+        Category category = findCategoryById(categoryId);
         List<Event> events = eventRepository.findAllByCategory(category);
 
         if (events.isEmpty()) {
-            categoryRepository.deleteById(catId);
+            categoryRepository.deleteById(categoryId);
         } else {
             throw new ConflictException("Category contain Events");
         }
@@ -42,15 +42,15 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategoryById(long catId, NewCategoryDto updateCategoryDto) {
-        Category category = findCategoryById(catId);
+    public CategoryDto updateCategoryById(long categoryId, NewCategoryDto updateCategoryDto) {
+        Category category = findCategoryById(categoryId);
         category.setName(updateCategoryDto.getName());
 
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
-    private Category findCategoryById(long catId) {
-        return categoryRepository.findById(catId).orElseThrow(() ->
-                new NotFoundException("Category with id " + catId + " not found"));
+    private Category findCategoryById(long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new NotFoundException("Category with id " + categoryId + " not found"));
     }
 }

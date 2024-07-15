@@ -30,9 +30,9 @@ public class PublicCategoryController {
         return service.getAllCategories(from, size);
     }
 
-    @GetMapping("/{catId}")
+    @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto getCategoryById(@PathVariable long catId) {
-        return service.getCategoryById(catId);
+    public CategoryDto getCategoryById(@PathVariable long categoryId) {
+        return service.getCategoryById(categoryId);
     }
 }

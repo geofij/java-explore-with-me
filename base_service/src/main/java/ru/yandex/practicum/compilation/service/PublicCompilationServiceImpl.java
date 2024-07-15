@@ -29,7 +29,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService  {
         if (pinned != null) {
             compilations = repository.findAllByPinned(pinned, page);
         } else {
-            compilations = repository.findAllComp(page);
+            compilations = repository.findAll(page).getContent();
         }
 
         return CompilationMapper.compilationDtoList(compilations);
@@ -37,14 +37,14 @@ public class PublicCompilationServiceImpl implements PublicCompilationService  {
 
     @Override
     @Transactional(readOnly = true)
-    public CompilationDto getCompilationById(long compId) {
-        Compilation compilation = checkCompilation(compId);
+    public CompilationDto getCompilationById(long compilationId) {
+        Compilation compilation = checkCompilation(compilationId);
 
         return CompilationMapper.toCompilationDto(compilation);
     }
 
-    private Compilation checkCompilation(long compId) {
-        return repository.findById(compId)
-                .orElseThrow(() -> new NotFoundException("Compilation with id-" + compId + " not found"));
+    private Compilation checkCompilation(long compilationId) {
+        return repository.findById(compilationId)
+                .orElseThrow(() -> new NotFoundException("Compilation with id-" + compilationId + " not found"));
     }
 }

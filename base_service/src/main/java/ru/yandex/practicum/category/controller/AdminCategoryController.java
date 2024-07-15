@@ -28,16 +28,16 @@ public class AdminCategoryController {
         return service.createNewCategory(newCategoryDto);
     }
 
-    @DeleteMapping("/{catId}")
+    @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategoryById(@PathVariable long catId) {
-        service.deleteCategoryById(catId);
+    public void deleteCategoryById(@PathVariable long categoryId) {
+        service.deleteCategoryById(categoryId);
     }
 
-    @PatchMapping("/{catId}")
+    @PatchMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto updateCategoryById(@PathVariable long catId,
+    public CategoryDto updateCategoryById(@PathVariable long categoryId,
                                           @Valid @RequestBody NewCategoryDto updateCategoryDto) {
-        return service.updateCategoryById(catId, updateCategoryDto);
+        return service.updateCategoryById(categoryId, updateCategoryDto);
     }
 }

@@ -50,8 +50,8 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     @Override
     @Transactional
-    public CompilationDto updateCompilationById(long compId, UpdateCompilationRequest updateCompilationDto) {
-        Compilation compilation = getCompilation(compId);
+    public CompilationDto updateCompilationById(long compilationId, UpdateCompilationRequest updateCompilationDto) {
+        Compilation compilation = getCompilation(compilationId);
 
         if (updateCompilationDto.getTitle() != null && !updateCompilationDto.getTitle().isBlank()) {
             compilation.setTitle(updateCompilationDto.getTitle());
@@ -84,13 +84,13 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
 
     @Override
     @Transactional
-    public void deleteCompilationById(long compId) {
-        getCompilation(compId);
-        compilationRepository.deleteById(compId);
+    public void deleteCompilationById(long compilationId) {
+        getCompilation(compilationId);
+        compilationRepository.deleteById(compilationId);
     }
 
-    private Compilation getCompilation(long compId) {
-        return compilationRepository.findById(compId)
-                .orElseThrow(() -> new NotFoundException("Compilation with id-" + compId + " not found"));
+    private Compilation getCompilation(long compilationId) {
+        return compilationRepository.findById(compilationId)
+                .orElseThrow(() -> new NotFoundException("Compilation with id-" + compilationId + " not found"));
     }
 }

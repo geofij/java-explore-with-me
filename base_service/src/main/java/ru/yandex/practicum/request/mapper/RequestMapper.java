@@ -17,6 +17,10 @@ public class RequestMapper {
     }
 
     public static ParticipationRequestDto toRequestDto(Request request) {
+        if (request == null) {
+            return new ParticipationRequestDto();
+        }
+
         return ParticipationRequestDto.builder()
                 .id(request.getId())
                 .event(request.getEvent().getId())
