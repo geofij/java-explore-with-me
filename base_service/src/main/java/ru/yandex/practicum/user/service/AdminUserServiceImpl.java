@@ -32,7 +32,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (ids != null && !ids.isEmpty()) {
             users = repository.findAllByIdIn(ids, page);
         } else {
-            users = repository.getAll(page).getContent();
+            users = repository.findAll(page).getContent();
         }
 
         if (users == null || users.isEmpty()) {
