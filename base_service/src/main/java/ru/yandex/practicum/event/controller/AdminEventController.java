@@ -46,7 +46,7 @@ public class AdminEventController {
         if (states != null) validateEventState(states);
 
         if ((rangeStart != null) && (rangeEnd != null)) if (rangeStart.isAfter(rangeEnd))
-            throw new BadRequestException("Неапваильно указаны даты начала и окончания события");
+            throw new BadRequestException("Start date and end date incorrect");
 
         return service.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
