@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.comments.dto.CommentResponseDto;
 import ru.yandex.practicum.comments.dto.CommentRequestDto;
+import ru.yandex.practicum.comments.dto.CommentResponseDto;
+import ru.yandex.practicum.comments.service.PrivateCommentService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -26,12 +27,14 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users")
 public class PrivateCommentController {
+    private final PrivateCommentService service;
+
     @PostMapping("/{userId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentResponseDto createNewComment(@PathVariable long userId,
                                                @RequestParam("eventId") long eventId,
                                                @Valid @RequestBody CommentRequestDto newComment) {
-        return null;
+        return service.createNewComment(userId, eventId, newComment);
     }
 
     @PatchMapping("/{userId}/comments/{commentId}")
@@ -39,14 +42,14 @@ public class PrivateCommentController {
     public CommentResponseDto updateCommentById(@PathVariable long userId,
                                                 @PathVariable long commentId,
                                                 @Valid @RequestBody CommentRequestDto updateComment) {
-        return null;
+        return service.updateCommentById(userId, commentId, updateComment);
     }
 
     @DeleteMapping("/{userId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentById(@PathVariable long userId,
                                   @PathVariable long commentId) {
-
+        service.deleteCommentById(userId, commentId);
     }
 
     //сначала новые
@@ -55,6 +58,6 @@ public class PrivateCommentController {
     public List<CommentResponseDto> getUserComments(@PathVariable long userId,
                                                     @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                     @RequestParam(defaultValue = "10") @Positive int size) {
-        return null;
+        return service.getUserComments(userId, from, size);
     }
 }

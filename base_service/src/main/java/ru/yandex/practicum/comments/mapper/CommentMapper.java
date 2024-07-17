@@ -41,7 +41,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public static List<CommentResponseDto> commentResponseList(List<Comment> comments) {
+    public static List<CommentResponseDto> toCommentResponseList(List<Comment> comments) {
         return comments.stream()
                 .map(CommentMapper::toCommentResponse)
                 .collect(Collectors.toList());
