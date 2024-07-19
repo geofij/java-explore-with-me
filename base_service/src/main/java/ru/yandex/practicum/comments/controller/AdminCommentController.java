@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.comments.dto.CommentResponseDto;
 import ru.yandex.practicum.comments.dto.DeleteCommentAdminRequest;
 import ru.yandex.practicum.comments.service.AdminCommentService;
+import ru.yandex.practicum.error.model.BadRequestException;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -31,7 +33,7 @@ public class AdminCommentController {
     private final AdminCommentService service;
 
     // поиск по: ивентами (ид), авторам (ид), времени создания, обновлялись ли
-    // сортировка по: OLD NEW EVENT_ID
+    // сортировка по: OLD NEW
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CommentResponseDto> getComments(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
@@ -42,12 +44,19 @@ public class AdminCommentController {
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = FORMAT) LocalDateTime rangeEnd,
                                                 @RequestParam(required = false) Boolean isUpdated,
                                                 @RequestParam(defaultValue = "NEW") String sort) {
+        if (sort != null && !sort.equals("OLD") && !sort.equals("NEW")) {
+            throw new ValidationException("Incorrect sorting");
+        }
+
+        if ((rangeStart != null) && (rangeEnd != null)) if (rangeStart.isAfter(rangeEnd))
+            throw new BadRequestException("Start date and end date incorrect");
+
         return service.getComments(from, size, eventIds, userIds, rangeStart, rangeEnd, isUpdated, sort);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComments(@Valid @RequestBody DeleteCommentAdminRequest deleteCommentAdminRequest) {
+    public void deleteComments(@Valid @RequestBody @NotNull DeleteCommentAdminRequest deleteCommentAdminRequest) {
         if (deleteCommentAdminRequest.getCommentIds().isEmpty()) {
             throw new ValidationException("Empty comment ids for deleting");
         }

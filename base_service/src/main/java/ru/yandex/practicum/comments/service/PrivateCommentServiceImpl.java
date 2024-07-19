@@ -65,7 +65,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     public List<CommentResponseDto> getUserComments(long userId, int from, int size) {
         checkUser(userId);
 
-        Sort sortByCreated = Sort.by(Sort.Direction.ASC, "created");
+        Sort sortByCreated = Sort.by(Sort.Direction.DESC, "created");
         Pageable page = PageRequest.of(from, size, sortByCreated);
 
         return CommentMapper.toCommentResponseList(commentRepository.findAllByAuthorId(userId, page));
