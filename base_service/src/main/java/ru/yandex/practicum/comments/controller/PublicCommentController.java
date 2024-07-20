@@ -23,7 +23,7 @@ public class PublicCommentController {
     private final PublicCommentService service;
 
     //сортировка по времени создания: сначала старые, сначала новые. по умолчанию сначала старые OLD/NEW
-    @GetMapping("/events/{eventId}")
+    @GetMapping("/events/{eventId}/comments")
     @ResponseStatus(HttpStatus.OK)
     public List<CommentResponseDto> getEventComments(@PathVariable long eventId,
                                                      @RequestParam(defaultValue = "OLD") String sort,

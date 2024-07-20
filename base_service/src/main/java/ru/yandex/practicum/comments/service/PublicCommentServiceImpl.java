@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.comments.dto.CommentResponseDto;
 import ru.yandex.practicum.comments.mapper.CommentMapper;
 import ru.yandex.practicum.comments.storage.CommentRepository;
@@ -20,6 +21,7 @@ public class PublicCommentServiceImpl implements PublicCommentService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getEventComments(long eventId, String sort, int from, int size) {
         eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id" + eventId + " not found"));

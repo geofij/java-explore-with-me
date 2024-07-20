@@ -2,6 +2,7 @@ package ru.yandex.practicum.event.mapper;
 
 import ru.yandex.practicum.category.mapper.CategoryMapper;
 import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.comments.mapper.CommentMapper;
 import ru.yandex.practicum.comments.model.Comment;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
@@ -74,7 +75,7 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(event.getViews())
-                .comments(comments)
+                .comments(CommentMapper.toCommentInEventList(event.getComments()))
                 .build();
     }
 

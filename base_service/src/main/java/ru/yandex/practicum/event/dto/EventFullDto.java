@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ru.yandex.practicum.category.dto.CategoryDto;
-import ru.yandex.practicum.comments.model.Comment;
+import ru.yandex.practicum.comments.dto.CommentInEventDto;
 import ru.yandex.practicum.event.model.EventState;
 import ru.yandex.practicum.user.dto.UserShortDto;
 
@@ -35,5 +35,5 @@ public class EventFullDto {
     private EventState state;
     private String title;
     private long views;
-    private List<Comment> comments;
+    private List<CommentInEventDto> comments;
 }

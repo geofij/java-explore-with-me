@@ -55,7 +55,7 @@ public class Event {
     private String title;
     private long views;
     private boolean available;
-    @OneToMany(mappedBy = "events", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Comment> comments;
 }

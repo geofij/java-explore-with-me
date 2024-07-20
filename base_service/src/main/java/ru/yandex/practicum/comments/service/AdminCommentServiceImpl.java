@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.comments.dto.CommentResponseDto;
 import ru.yandex.practicum.comments.dto.DeleteCommentAdminRequest;
 import ru.yandex.practicum.comments.mapper.CommentMapper;
@@ -30,6 +31,7 @@ public class AdminCommentServiceImpl implements AdminCommentService{
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getComments(int from, int size, List<Long> eventIds, List<Long> userIds, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean isUpdated, String sort) {
         Sort pageSort;
 
@@ -63,6 +65,7 @@ public class AdminCommentServiceImpl implements AdminCommentService{
     }
 
     @Override
+    @Transactional
     public void deleteComments(DeleteCommentAdminRequest deleteCommentAdminRequest) {
         commentRepository.deleteByIdIn(deleteCommentAdminRequest.getCommentIds());
     }
