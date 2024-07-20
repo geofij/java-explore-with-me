@@ -34,7 +34,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         User author = checkUser(userId);
         Event event = checkEvent(eventId);
 
-        if (event.getState().equals(EventState.PUBLISHED)) {
+        if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new NotFoundException("Event with id " + eventId + " not found or not published");
         }
 

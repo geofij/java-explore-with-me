@@ -32,8 +32,6 @@ public class AdminCommentController {
     private static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
     private final AdminCommentService service;
 
-    // поиск по: ивентами (ид), авторам (ид), времени создания, обновлялись ли
-    // сортировка по: OLD NEW
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CommentResponseDto> getComments(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
