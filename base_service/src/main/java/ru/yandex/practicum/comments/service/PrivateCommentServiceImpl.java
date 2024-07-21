@@ -31,8 +31,10 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Override
     @Transactional
     public CommentResponseDto createNewComment(long userId, long eventId, CommentRequestDto newComment) {
-        User author = checkUser(userId);
-        Event event = checkEvent(eventId);
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " not found"));
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new NotFoundException("Event with id " + eventId + " not found or not published");
@@ -45,7 +47,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Transactional
     public CommentResponseDto updateCommentById(long userId, long commentId, CommentRequestDto updateComment) {
         checkUser(userId);
-        Comment comment = checkComment(commentId);
+        Comment comment = getCommentById(commentId);
 
         if (comment.getAuthor().getId() != userId) {
             throw new NotFoundException("Comment with id-" + commentId + " where user id-" + userId + " not found");
@@ -61,7 +63,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     @Transactional
     public void deleteCommentById(long userId, long commentId) {
         checkUser(userId);
-        Comment comment = checkComment(commentId);
+        Comment comment = getCommentById(commentId);
 
         if (comment.getAuthor().getId() != userId) {
             throw new NotFoundException("Comment with id-" + commentId + " where user id-" + userId + " not found");
@@ -81,18 +83,14 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         return CommentMapper.toCommentResponseList(commentRepository.findAllByAuthorId(userId, page));
     }
 
-    private Comment checkComment(long commentId) {
+    private Comment getCommentById(long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Comment with id " + commentId + " not found"));
     }
 
-    private User checkUser(long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-    }
-
-    private Event checkEvent(long eventId) {
-        return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Event with id " + eventId + " not found"));
+    private void checkUser(long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User with id " + userId + " not found");
+        }
     }
 }

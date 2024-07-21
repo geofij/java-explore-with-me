@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class CommentMapper {
     public static Comment toNewComment(CommentRequestDto commentRequest, Event event, User author) {
         if (commentRequest == null) {
-            return new Comment();
+            return null;
         }
 
         return Comment.builder()
