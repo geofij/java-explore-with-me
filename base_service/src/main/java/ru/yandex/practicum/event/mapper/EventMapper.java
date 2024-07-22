@@ -2,6 +2,8 @@ package ru.yandex.practicum.event.mapper;
 
 import ru.yandex.practicum.category.mapper.CategoryMapper;
 import ru.yandex.practicum.category.model.Category;
+import ru.yandex.practicum.comments.mapper.CommentMapper;
+import ru.yandex.practicum.comments.model.Comment;
 import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.dto.NewEventDto;
@@ -47,6 +49,12 @@ public class EventMapper {
             return new EventFullDto();
         }
 
+        List<Comment> comments = new ArrayList<>();
+
+        if (event.getComments() != null) {
+            comments = event.getComments();
+        }
+
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -67,12 +75,19 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(event.getViews())
+                .comments(CommentMapper.toCommentInEventList(event.getComments()))
                 .build();
     }
 
     public static EventShortDto toShortDto(Event event) {
         if (event == null) {
             return new EventShortDto();
+        }
+
+        int commentCount = 0;
+
+        if (event.getComments() != null) {
+            commentCount = event.getComments().size();
         }
 
         return EventShortDto.builder()
@@ -85,6 +100,7 @@ public class EventMapper {
                 .paid(event.isPaid())
                 .title(event.getTitle())
                 .views(event.getViews())
+                .comments(commentCount)
                 .build();
     }
 
